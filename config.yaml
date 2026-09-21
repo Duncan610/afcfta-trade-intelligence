@@ -1,0 +1,34 @@
+# Milestone 1 scope
+
+countries:
+  - name: Kenya
+    iso3: KEN
+  - name: Nigeria
+    iso3: NGA
+  - name: Egypt
+    iso3: EGY
+  - name: South Africa
+    iso3: ZAF
+  - name: Ghana
+    iso3: GHA
+
+hs_chapters:
+  - code: "09"
+    description: "Coffee, tea, mate and spices"
+  - code: "52"
+    description: "Cotton"
+  - code: "08"
+    description: "Edible fruit and nuts"
+
+years:
+  - 2023
+  - 2024
+
+comtrade:
+  base_url: "https://comtradeapi.un.org/data/v1/get"
+  freq: "A"          # annual
+  type: "C"          # commodities
+  clCode: "HS"
+
+wits:
+  base_url: "https://wits.worldbank.org/API/V1/SDMX/V2/rest"

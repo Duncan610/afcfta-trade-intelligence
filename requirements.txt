@@ -1,0 +1,6 @@
+pyspark>=3.5
+pandas
+requests
+pyyaml
+world_trade_data
+delta-spark
