@@ -1,1 +1,8 @@
 # afcfta-trade-intelligence
+
+
+## Known data limitations
+- **Egypt has no country-level tariff data in TRAINS for 2023-2024.** Confirmed directly via WITS's own Tariff and Trade Analysis query tool (not just the API wrapper) the query returned "No data available for selected reporters." Egypt only appears in TRAINS as part of aggregate preferential-arrangement groups (e.g. GSTP codes A15/A16), not as an individual reporter. Egypt is therefore excluded from the tariff side of the gold mart for milestone 1; its trade-flow data from Comtrade is still included.
+- **Only 2023 tariff data is available, not 2024**, for Kenya, Nigeria, South Africa, and Ghana  national tariff schedule submissions to TRAINS lag behind the current year. Comtrade trade-flow data covers both 2023 and 2024; the gold-layer join treats tariff data as the more time-lagged of the two sources rather than forcing an artificial year match.
+- WITS tariff data is ingested from manually exported CSVs (via the WITS web portal's "Tariff and Trade Analysis" advanced query tool) rather than the WITS API. The public `world_trade_data` Python wrapper returned `Invalid_Reporter` errors for every country tested, including known-good reporters like the USA, indicating a broken/stale client library rather than a genuine data gap. This is a documented, deliberate scoping decision — see `src/ingest_wits.py`.
+- AfCFTA-specific preferential tariff rates may be sparsely reported for some products even where a country does report AfCFTA preferential trade reporting is still maturing. Where this is the case, it's documented explicitly in the silver/gold transformation logic rather than silently backfilled.
