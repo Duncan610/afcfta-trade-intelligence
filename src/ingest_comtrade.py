@@ -9,6 +9,7 @@ set as the COMTRADE_API_KEY environment variable. Without a key, calls fall
 back to the keyless preview endpoint (capped at 500 records/call).
 """
 
+import json
 import os
 import time
 import requests
@@ -21,6 +22,9 @@ with open("config.yaml") as f:
 API_KEY = os.environ.get("COMTRADE_API_KEY")
 BASE_URL = CONFIG["comtrade"]["base_url"]
 
+# Comtrade's reporterCode is the UN M49 / ISO-numeric code, not ISO3.
+# Mapping for our milestone 1 country slice (config.yaml still stores ISO3
+# for readability; this translates it for the API call).
 ISO3_TO_M49 = {
     "KEN": "404",
     "NGA": "566",
@@ -71,8 +75,14 @@ def ingest_bronze():
                 all_records.extend(records)
                 print(f"{country['iso3']} / HS{chapter['code']} / {year}: {len(records)} rows")
 
-    # TODO: replace with spark.createDataFrame(all_records).write.format("delta")
-    #       .mode("append").saveAsTable("afcfta_trade.bronze.comtrade_raw")
+   
+    os.makedirs("data/bronze", exist_ok=True)
+    out_path = "data/bronze/comtrade_raw.json"
+    with open(out_path, "w") as f:
+        for record in all_records:
+            f.write(json.dumps(record) + "\n")
+    print(f"Wrote {len(all_records)} records to {out_path}")
+
     return all_records
 
 
