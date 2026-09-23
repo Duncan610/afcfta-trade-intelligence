@@ -1,0 +1,7 @@
+"Selected Nomen","Native Nomen","Reporter","Reporter Name","Product","Product Name","Partner","Partner Name","Tariff Year","Trade Year","Trade Source","DutyType","Simple Average","Weighted Average","Standard Deviation","Minimum Rate","Maximum Rate","Nbr of Total Lines","Nbr of DomesticPeaks","Nbr of InternationalPeaks","Imports Value in 1000 USD","Binding Coverage"
+"HS","H6","710","South Africa","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"CMT","AHS",4.4,2.06,8.14,0,35,844,30,97,163404.356,
+"HS","H6","710","South Africa","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"CMT","MFN",5.35,3.66,7.74,0,35,99,2,13,163404.356,
+"HS","H6","710","South Africa","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"CMT","AHS",1.73,2.07,5.58,0,25,1142,28,75,218603.547,
+"HS","H6","710","South Africa","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"CMT","MFN",2.04,2.52,6.6,0,25,47,2,4,218603.547,
+"HS","H6","710","South Africa","52","COTTON","000"," World",2023,2023,"CMT","AHS",15.41,15.01,7.56,0,22,1052,0,460,134189.569,
+"HS","H6","710","South Africa","52","COTTON","000"," World",2023,2023,"CMT","MFN",18.52,19.38,4.94,0,22,126,0,70,134189.569,

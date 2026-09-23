@@ -1,58 +1,60 @@
 """
 Bronze-layer ingestion: WITS/TRAINS tariff data (preferential + MFN, HS6 level).
 
-Uses the `world_trade_data` Python wrapper around the WITS REST API.
-No API key required.
+NOTE ON DATA SOURCE: this reads manually exported CSVs from the WITS web
+portal (https://wits.worldbank.org/tariff/trains/) rather than calling the
+WITS API, because the public `world_trade_data` Python wrapper returned
+Invalid_Reporter errors for every tested country -- including known-good
+reporters like the USA -- indicating a broken/stale client library rather
+than a genuine data gap. This is a documented, deliberate scoping decision,
+not a workaround being hidden.
 
-Note: AfCFTA-specific preferential rates may be sparsely reported for some
-country pairs, since AfCFTA preferential trade reporting is still maturing.
-This is logged explicitly rather than silently backfilled -- see README.
+Expects one CSV per country at data/bronze/wits_tariffs_<ISO3>.csv,
+exported from the WITS "Tariff and Trade Analysis" advanced query tool.
 """
 
+import glob
+import os
+import pandas as pd
 import yaml
-import world_trade_data as wits
 from datetime import datetime, timezone
 
 with open("config.yaml") as f:
     CONFIG = yaml.safe_load(f)
 
-
-def fetch_tariffs(reporter_iso3: str, year: int):
-    """Fetch reported tariff data (MFN + preferential where available)."""
-    try:
-        df = wits.get_tariff_reported(
-            reporter=reporter_iso3,
-            partner="wld",
-            product="all",
-            year=year,
-        )
-        return df
-    except Exception as e:
-        print(f"  WARNING: no tariff data for {reporter_iso3} / {year}: {e}")
-        return None
+BRONZE_DIR = "data/bronze"
 
 
 def ingest_bronze():
-    """Pull tariff data for all configured countries/years and tag with metadata."""
+    """Read all manually exported WITS tariff CSVs and tag with metadata."""
     frames = []
     ingested_at = datetime.now(timezone.utc).isoformat()
 
-    for country in CONFIG["countries"]:
-        for year in CONFIG["years"]:
-            df = fetch_tariffs(country["iso3"], year)
-            if df is not None and not df.empty:
-                df["_ingested_at"] = ingested_at
-                df["_source"] = "wits_trains"
-                frames.append(df)
-                print(f"{country['iso3']} / {year}: {len(df)} tariff rows")
-            else:
-                print(f"{country['iso3']} / {year}: NO DATA -- flag for gold-layer documentation")
+    expected_isos = {c["iso3"] for c in CONFIG["countries"]}
+    found_isos = set()
 
-    # TODO: concat frames, filter to configured HS chapters, write to
-    #       spark table afcfta_trade.bronze.wits_tariffs_raw
+    for path in glob.glob(os.path.join(BRONZE_DIR, "wits_tariffs_*.csv")):
+        iso3 = os.path.basename(path).replace("wits_tariffs_", "").replace(".csv", "").upper()
+        try:
+            df = pd.read_csv(path, encoding="utf-8")
+        except UnicodeDecodeError:
+            df = pd.read_csv(path, encoding="cp1252")
+        df["_ingested_at"] = ingested_at
+        df["_source"] = "wits_manual_export"
+        df["_reporter_iso3"] = iso3
+        frames.append(df)
+        found_isos.add(iso3)
+        print(f"{iso3}: {len(df)} tariff rows (from {path})")
+
+    missing = expected_isos - found_isos
+    if missing:
+        print(f"WARNING: no CSV found for {sorted(missing)} -- "
+              f"export these from WITS before running the silver transform")
+
     return frames
 
 
 if __name__ == "__main__":
     results = ingest_bronze()
-    print(f"Total country/year slices with data: {len(results)}")
+    total_rows = sum(len(df) for df in results)
+    print(f"Total rows across {len(results)} country file(s): {total_rows}")

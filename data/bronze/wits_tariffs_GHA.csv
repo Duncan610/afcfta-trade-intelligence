@@ -1,0 +1,7 @@
+"Selected Nomen","Native Nomen","Reporter","Reporter Name","Product","Product Name","Partner","Partner Name","Tariff Year","Trade Year","Trade Source","DutyType","Simple Average","Weighted Average","Standard Deviation","Minimum Rate","Maximum Rate","Nbr of Total Lines","Nbr of DomesticPeaks","Nbr of InternationalPeaks","Imports Value in 1000 USD","Binding Coverage"
+"HS","H6","288","Ghana","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"INV","AHS",18.15,12.04,5.96,0,20,291,0,258,26377.101,
+"HS","H6","288","Ghana","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"INV","MFN",19.57,19.82,2.43,5,20,74,0,72,26377.101,
+"HS","H6","288","Ghana","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"INV","AHS",17.05,11.3,5.48,0,20,317,0,170,181986.575,
+"HS","H6","288","Ghana","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"INV","MFN",18.46,11.31,5,10,20,72,0,35,181986.575,
+"HS","H6","288","Ghana","52","COTTON","000"," World",2023,2023,"INV","AHS",18.32,29.14,10.12,0,35,179,0,118,202985.764,
+"HS","H6","288","Ghana","52","COTTON","000"," World",2023,2023,"INV","MFN",15.75,29.16,8.63,5,35,136,0,65,202985.764,

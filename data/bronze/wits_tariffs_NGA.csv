@@ -1,0 +1,7 @@
+"Selected Nomen","Native Nomen","Reporter","Reporter Name","Product","Product Name","Partner","Partner Name","Tariff Year","Trade Year","Trade Source","DutyType","Simple Average","Weighted Average","Standard Deviation","Minimum Rate","Maximum Rate","Nbr of Total Lines","Nbr of DomesticPeaks","Nbr of InternationalPeaks","Imports Value in 1000 USD","Binding Coverage"
+"HS","H6","566","Nigeria","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"CMT","AHS",17.51,18.98,5.98,0,20,234,0,202,154255.676,
+"HS","H6","566","Nigeria","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"CMT","MFN",19.57,19.48,2.43,5,20,74,0,72,154255.676,
+"HS","H6","566","Nigeria","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"CMT","AHS",15.49,17.04,4.36,0,20,745,0,112,85040.241,
+"HS","H6","566","Nigeria","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"CMT","MFN",18.46,17.09,5,10,20,72,0,35,85040.241,
+"HS","H6","566","Nigeria","52","COTTON","000"," World",2023,2023,"CMT","AHS",17.17,26.7,9.84,0,35,253,0,145,23494.42,
+"HS","H6","566","Nigeria","52","COTTON","000"," World",2023,2023,"CMT","MFN",15.75,26.7,8.63,5,35,136,0,65,23494.42,

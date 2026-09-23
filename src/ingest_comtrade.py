@@ -21,11 +21,25 @@ with open("config.yaml") as f:
 API_KEY = os.environ.get("COMTRADE_API_KEY")
 BASE_URL = CONFIG["comtrade"]["base_url"]
 
+ISO3_TO_M49 = {
+    "KEN": "404",
+    "NGA": "566",
+    "EGY": "818",
+    "ZAF": "710",
+    "GHA": "288",
+}
+
 
 def fetch_comtrade(reporter_iso3: str, hs_code: str, year: int) -> list[dict]:
     """Fetch one reporter/HS-chapter/year slice from UN Comtrade."""
+    reporter_code = ISO3_TO_M49[reporter_iso3]
+    type_code = CONFIG["comtrade"]["type"]
+    freq_code = CONFIG["comtrade"]["freq"]
+    cl_code = CONFIG["comtrade"]["clCode"]
+
+    url = f"{BASE_URL}/{type_code}/{freq_code}/{cl_code}"
     params = {
-        "reporterCode": reporter_iso3,
+        "reporterCode": reporter_code,
         "period": year,
         "cmdCode": hs_code,
         "flowCode": "M,X",  # imports and exports
@@ -33,11 +47,11 @@ def fetch_comtrade(reporter_iso3: str, hs_code: str, year: int) -> list[dict]:
     }
     headers = {"Ocp-Apim-Subscription-Key": API_KEY} if API_KEY else {}
 
-    resp = requests.get(BASE_URL, params=params, headers=headers, timeout=30)
+    resp = requests.get(url, params=params, headers=headers, timeout=30)
     if resp.status_code == 429:
         # Free tier rate limit -- back off and retry once
         time.sleep(5)
-        resp = requests.get(BASE_URL, params=params, headers=headers, timeout=30)
+        resp = requests.get(url, params=params, headers=headers, timeout=30)
     resp.raise_for_status()
     return resp.json().get("data", [])
 

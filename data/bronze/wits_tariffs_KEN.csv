@@ -1,0 +1,7 @@
+"Selected Nomen","Native Nomen","Reporter","Reporter Name","Product","Product Name","Partner","Partner Name","Tariff Year","Trade Year","Trade Source","DutyType","Simple Average","Weighted Average","Standard Deviation","Minimum Rate","Maximum Rate","Nbr of Total Lines","Nbr of DomesticPeaks","Nbr of InternationalPeaks","Imports Value in 1000 USD","Binding Coverage"
+"HS","H6","404","Kenya","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"CMT","AHS",28.29,28.94,7.46,0,35,287,0,276,28642.659,
+"HS","H6","404","Kenya","08","EDIBLE FRUIT AND NUTS; PEEL OF CITRUS FRUIT OR MEL","000"," World",2023,2023,"CMT","MFN",30.86,29.49,4.93,25,35,70,0,70,28642.659,
+"HS","H6","404","Kenya","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"CMT","AHS",28.89,22.24,9.15,0,35,324,0,302,21880.422,
+"HS","H6","404","Kenya","09","COFFEE, TEA, MATÉ AND SPICES","000"," World",2023,2023,"CMT","MFN",29.62,33.53,5,25,35,41,0,41,21880.422,
+"HS","H6","404","Kenya","52","COTTON","000"," World",2023,2023,"CMT","AHS",22.85,20.21,11.21,0,50,333,32,272,53666.882,
+"HS","H6","404","Kenya","52","COTTON","000"," World",2023,2023,"CMT","MFN",19.15,23.79,10.61,0,50,131,7,80,53666.882,
