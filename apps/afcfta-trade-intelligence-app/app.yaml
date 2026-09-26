@@ -5,6 +5,6 @@ command: [
 ]
 env:
   - name: "DATABRICKS_WAREHOUSE_ID"
-    value: "7474643844084651"
+    value: "232e31be3b6d7b1b"
   - name: "STREAMLIT_GATHER_USAGE_STATS"
     value: "false"
