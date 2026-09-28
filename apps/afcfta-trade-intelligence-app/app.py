@@ -1,36 +1,62 @@
+import os
+import pandas as pd
 import streamlit as st
 from databricks import sql
 from databricks.sdk.core import Config
-import pandas as pd
-import os
 
 st.set_page_config(page_title="AfCFTA Trade Intelligence", layout="wide")
 st.title("AfCFTA Trade Intelligence — Milestone 1")
 st.caption("Compare applied vs. MFN tariff treatment and trade volume across 5 African economies")
 
-cfg = Config()  # auto-authenticates using the app's own identity in Databricks
+WAREHOUSE_ID = os.getenv("DATABRICKS_WAREHOUSE_ID")
+cfg = Config()  # picks up the app's own identity inside Databricks Apps
+HOST = (cfg.host or "").replace("https://", "").replace("http://", "").rstrip("/")
+
+with st.expander("Connection details (for troubleshooting)"):
+    st.write("Workspace host:", HOST or "NOT FOUND")
+    st.write("Warehouse ID:", WAREHOUSE_ID or "NOT FOUND")
+
+NUMERIC_COLS = [
+    "year", "total_trade_value_usd", "applied_tariff_pct",
+    "mfn_tariff_pct", "preferential_discount_pct", "tariff_year",
+]
 
 
-@st.cache_data(ttl=600)
-def load_data():
-    conn = sql.connect(
-        server_hostname=cfg.host,
-        http_path=f"/sql/1.0/warehouses/{os.getenv('DATABRICKS_WAREHOUSE_ID')}",
+@st.cache_data(ttl=600, show_spinner="Loading data from the gold table...")
+def load_data(host: str, warehouse_id: str) -> pd.DataFrame:
+    with sql.connect(
+        server_hostname=host,
+        http_path=f"/sql/1.0/warehouses/{warehouse_id}",
         credentials_provider=lambda: cfg.authenticate,
-    )
-    query = "SELECT * FROM afcfta_trade.gold.market_opportunity"
-    df = pd.read_sql(query, conn)
-    conn.close()
+    ) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT * FROM afcfta_trade.gold.market_opportunity")
+            df = cur.fetchall_arrow().to_pandas()
+    # Decimal columns arrive as Python objects; convert so charts and sums work
+    for col in NUMERIC_COLS:
+        if col in df.columns:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
     return df
 
 
-df = load_data()
+try:
+    df = load_data(HOST, WAREHOUSE_ID)
+except Exception as e:
+    st.error(f"Could not load data: {type(e).__name__}: {e}")
+    if e.__cause__ is not None:
+        st.code(repr(e.__cause__))
+    st.info(
+        "Most likely causes: the app's service principal lacks 'Can use' on the "
+        "SQL warehouse, the warehouse ID is wrong, or the SELECT/USE grants are missing."
+    )
+    st.stop()
 
 chapters = df[["hs_chapter", "product_name"]].drop_duplicates().sort_values("hs_chapter")
+names = dict(zip(chapters["hs_chapter"], chapters["product_name"]))
 chapter_choice = st.selectbox(
     "Select an HS chapter",
-    options=chapters["hs_chapter"],
-    format_func=lambda c: f"HS {c} — {chapters[chapters.hs_chapter == c]['product_name'].iloc[0]}",
+    options=list(names.keys()),
+    format_func=lambda c: f"HS {c} — {names[c]}",
 )
 
 filtered = df[df["hs_chapter"] == chapter_choice]
@@ -45,16 +71,17 @@ with col1:
         .set_index("reporter_iso3")
     )
     st.dataframe(tariff_view, use_container_width=True)
-    st.caption("Egypt has no applied/MFN tariff data — see README for why.")
+    st.caption("Egypt has no applied/MFN tariff data. See the README for why.")
 
 with col2:
-    st.subheader("Trade value by country (2023)")
-    trade_view = (
+    st.subheader("Trade value by country (2023, US$)")
+    trade_2023 = (
         filtered[filtered["year"] == 2023]
-        .groupby("reporter_iso3")["total_trade_value_usd"]
-        .sum()
+        .pivot_table(index="reporter_iso3", columns="flow_code",
+                     values="total_trade_value_usd", aggfunc="sum")
+        .rename(columns={"M": "Imports", "X": "Exports"})
     )
-    st.bar_chart(trade_view)
+    st.bar_chart(trade_2023)
 
 st.divider()
 st.subheader("Full detail")
